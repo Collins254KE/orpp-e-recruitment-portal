@@ -1,18 +1,33 @@
+
+# Node and Composer dependencies
 /node_modules
-/public/hot
-/public/storage
-/storage/*.key
 /vendor
+
+# Laravel environment files
 .env
 .env.backup
+
+# Laravel storage and cache
+/public/storage
+/storage/*.key
+/storage/app/public
+/storage/framework/
+storage/logs/
+
+# Laravel test and debug files
 .phpunit.result.cache
-docker-compose.override.yml
-Homestead.json
-Homestead.yaml
 npm-debug.log
 yarn-error.log
+
+# IDE/Editor settings
 /.idea
 /.vscode
+
+# OS or temporary files
 *.zip
 *.rar
 
+# Docker and Homestead
+docker-compose.override.yml
+Homestead.json
+Homestead.yaml
