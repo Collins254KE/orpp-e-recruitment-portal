@@ -1,0 +1,15 @@
+// app/Models/User.php
+
+public function isProfileComplete()
+{
+    return $this->phone &&
+           $this->title &&
+           $this->id_passport &&
+           $this->kra_pin &&
+           $this->county &&
+           $this->sub_county &&
+           $this->ethnicity &&
+           $this->gender &&
+           $this->nationality &&
+           $this->dob;
+}
