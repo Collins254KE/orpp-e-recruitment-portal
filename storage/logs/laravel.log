@@ -7264,3 +7264,27 @@ ion: relative; line-height: 1.5em; margin-top: 0; color: #b0adc5; font-size=
 [stacktrace]
 #0 {main}
 "} 
+[2025-06-24 07:44:22] local.ERROR: Unable to prepare route [user/applications] for serialization. Another route has already been assigned name [user.applications]. {"exception":"[object] (LogicException(code: 0): Unable to prepare route [user/applications] for serialization. Another route has already been assigned name [user.applications]. at C:\\orpp4\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\AbstractRouteCollection.php:247)
+[stacktrace]
+#0 C:\\orpp4\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\AbstractRouteCollection.php(208): Illuminate\\Routing\\AbstractRouteCollection->addToSymfonyRoutesCollection()
+#1 C:\\orpp4\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\RouteCollection.php(246): Illuminate\\Routing\\AbstractRouteCollection->toSymfonyRouteCollection()
+#2 C:\\orpp4\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\AbstractRouteCollection.php(192): Illuminate\\Routing\\RouteCollection->toSymfonyRouteCollection()
+#3 C:\\orpp4\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\AbstractRouteCollection.php(163): Illuminate\\Routing\\AbstractRouteCollection->dumper()
+#4 C:\\orpp4\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Console\\RouteCacheCommand.php(120): Illuminate\\Routing\\AbstractRouteCollection->compile()
+#5 C:\\orpp4\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Console\\RouteCacheCommand.php(79): Illuminate\\Foundation\\Console\\RouteCacheCommand->buildRouteCacheFile()
+#6 C:\\orpp4\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\BoundMethod.php(36): Illuminate\\Foundation\\Console\\RouteCacheCommand->handle()
+#7 C:\\orpp4\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\Util.php(41): Illuminate\\Container\\BoundMethod::{closure:Illuminate\\Container\\BoundMethod::call():35}()
+#8 C:\\orpp4\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\BoundMethod.php(93): Illuminate\\Container\\Util::unwrapIfClosure()
+#9 C:\\orpp4\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\BoundMethod.php(35): Illuminate\\Container\\BoundMethod::callBoundMethod()
+#10 C:\\orpp4\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\Container.php(661): Illuminate\\Container\\BoundMethod::call()
+#11 C:\\orpp4\\vendor\\laravel\\framework\\src\\Illuminate\\Console\\Command.php(183): Illuminate\\Container\\Container->call()
+#12 C:\\orpp4\\vendor\\symfony\\console\\Command\\Command.php(326): Illuminate\\Console\\Command->execute()
+#13 C:\\orpp4\\vendor\\laravel\\framework\\src\\Illuminate\\Console\\Command.php(152): Symfony\\Component\\Console\\Command\\Command->run()
+#14 C:\\orpp4\\vendor\\symfony\\console\\Application.php(1078): Illuminate\\Console\\Command->run()
+#15 C:\\orpp4\\vendor\\symfony\\console\\Application.php(324): Symfony\\Component\\Console\\Application->doRunCommand()
+#16 C:\\orpp4\\vendor\\symfony\\console\\Application.php(175): Symfony\\Component\\Console\\Application->doRun()
+#17 C:\\orpp4\\vendor\\laravel\\framework\\src\\Illuminate\\Console\\Application.php(102): Symfony\\Component\\Console\\Application->run()
+#18 C:\\orpp4\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Console\\Kernel.php(155): Illuminate\\Console\\Application->run()
+#19 C:\\orpp4\\artisan(35): Illuminate\\Foundation\\Console\\Kernel->handle()
+#20 {main}
+"} 
