@@ -26,7 +26,6 @@ RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
 # Prepare Laravel environment
-RUN cp .env.example .env \
     && composer install --no-interaction --prefer-dist --optimize-autoloader \
     && php artisan key:generate \
     && php artisan config:cache \
