@@ -40,9 +40,12 @@
                 <p><strong>KRA PIN:</strong> <?php echo e($user->kra_pin); ?></p>
                 <p><strong>County:</strong> <?php echo e($user->county); ?></p>
     <p><strong>Sub-County:</strong> <?php echo e($user->sub_county); ?></p>
+     <p><strong>Ward:</strong> <?php echo e($user->ward); ?></p>
     <p><strong>Ethnicity:</strong> <?php echo e($user->ethnicity); ?></p>
                 <p><strong>Gender:</strong> <?php echo e($user->gender); ?></p>
                 <p><strong>Nationality:</strong> <?php echo e($user->nationality); ?></p>
+                <p><strong>Disability Certificate Number:</strong> <?php echo e($user->disability_certificate_number); ?></p>
+
     <p><strong>Date of Birth:</strong> <?php echo e(\Carbon\Carbon::parse($user->dob)->format('F d, Y')); ?></p>
 
 <a href="<?php echo e(route('profile.edit')); ?>" class="btn btn-primary mt-3">Update biodata</a>

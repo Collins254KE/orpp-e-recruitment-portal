@@ -32,7 +32,8 @@ class JobListingController extends Controller
         'deadline' => 'required|date',
         'duties_and_responsibilities' => 'required|string',
         'requirements' => 'required|string',
-        'benefits' => 'required|string',
+        'min_years_of_experience' => 'nullable|integer|min:0',
+        'min_level' => 'nullable|integer|between:1,5',
     ]);
 
     $job = JobListing::findOrFail($id);
@@ -42,10 +43,10 @@ class JobListingController extends Controller
     $job->deadline = $request->deadline;
     $job->duties_and_responsibilities = $request->duties_and_responsibilities;
     $job->requirements = $request->requirements;
-    $job->benefits = $request->benefits;
-    $job->save();
+    $job->min_years_of_experience = $request->input('min_years_of_experience', 0);
+    $job->min_level = $request->input('min_level');
 
- // ✅ Add this line here to handle publication checkbox
+ //  Add this line here to handle publication checkbox
     $job->is_published = $request->has('is_published');
 
     $job->save();

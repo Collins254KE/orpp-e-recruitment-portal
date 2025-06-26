@@ -121,15 +121,19 @@
                     </button>
 
                     <!-- Modal -->
-                    <div class="modal fade" id="jobModal{{ $job->id }}" tabindex="-1" aria-labelledby="jobModalLabel{{ $job->id }}" aria-hidden="true">
-                        <div class="modal-dialog modal-xl modal-dialog-centered">
-                            <div class="modal-content">
-                                <div class="modal-header bg-primary text-white">
-                                    <h5 class="modal-title" id="jobModalLabel{{ $job->id }}">
-                                        <strong>{{ $job->title }}</strong>
-                                    </h5>
-                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
+                   <div class="modal fade" id="jobModal{{ $job->id }}" tabindex="-1" aria-labelledby="jobModalLabel{{ $job->id }}" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <div>
+                    <h5 class="modal-title mb-0" id="jobModalLabel{{ $job->id }}">
+                        <strong>{{ $job->title }}</strong>
+                    </h5>
+                    <small>REF NO: <span class="text-warning fw-bold">{{ $job->code }}</span></small>
+                </div>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
                                 <div class="modal-body">
                                     <div class="row mb-3">
                                         <div class="col-md-6">
@@ -164,40 +168,81 @@
                                         </div>
                                     </div>
                                     @endif
+@if($job->requirements || $job->min_experience || $job->min_qualification || $job->min_level || $job->min_years_of_experience)
+    <div class="table-responsive mb-3">
 
-                                    @if($job->requirements)
-                                    <div class="card mb-3 border-success">
-                                        <div class="card-header bg-success text-white">
-                                            <h6 class="mb-0"><i class="fas fa-graduation-cap"></i> Requirements</h6>
-                                        </div>
-                                        <div class="card-body">
-                                            {!! nl2br(e($job->requirements)) !!}
-                                        </div>
-                                    </div>
-                                    @endif
+        <table class="table table-bordered border-success">
+         <thead>
+    <tr class="bg-info text-white">
+        <th colspan="2">
+            <i class="fas fa-graduation-cap me-1"></i> Requirements
+        </th>
+    </tr>
+</thead>
 
-                                    @if($job->benefits)
-                                    <div class="card mb-3 border-warning">
-                                        <div class="card-header bg-warning text-dark">
-                                            <h6 class="mb-0"><i class="fas fa-gift"></i> Benefits</h6>
-                                        </div>
-                                        <div class="card-body">
-                                            {!! nl2br(e($job->benefits)) !!}
-                                        </div>
-                                    </div>
-                                    @endif
+            <tbody>
+                {{-- Minimum Qualification --}}
+                @if($job->min_qualification)
+                <tr>
+                    <th style="width: 35%;">Minimum Qualification</th>
+                    <td>{{ $job->min_qualification }}</td>
+                </tr>
+                @endif
 
-                                    @if($job->description)
-                                    <div class="card border-secondary">
-                                        <div class="card-header bg-secondary text-white">
-                                            <h6 class="mb-0"><i class="fas fa-info-circle"></i> Additional Information</h6>
-                                        </div>
-                                        <div class="card-body">
-                                            {!! $job->description !!}
-                                        </div>
-                                    </div>
-                                    @endif
-                                </div>
+                {{-- Minimum Years of Experience --}}
+                @if($job->min_experience)
+                <tr>
+                    <th>Minimum Years of Experience</th>
+                    <td>{{ $job->min_experience }} year{{ $job->min_experience > 1 ? 's' : '' }}</td>
+                </tr>
+                @endif
+
+                {{-- Requirements --}}
+                @if($job->requirements)
+                <tr>
+                    <th>Requirements</th>
+                    <td>{!! nl2br(e($job->requirements)) !!}</td>
+                </tr>
+                @endif
+
+                {{-- Minimum Qualification Level (with badge) --}}
+                @if($job->min_level)
+                <tr>
+                    <th>Minimum Qualification Level</th>
+                    <td>
+                        <span class="badge bg-warning text-dark">
+                            @switch($job->min_level)
+                                @case(1) Certificate @break
+                                @case(2) Diploma @break
+                                @case(3) Degree @break
+                                @case(4) Masters @break
+                                @case(5) PhD @break
+                                @default Unknown
+                            @endswitch
+                        </span>
+                    </td>
+                </tr>
+                @endif
+
+                {{-- Min Years of Experience (with badge) --}}
+                @if($job->min_years_of_experience)
+                <tr>
+                    <th>Min Years of Experience</th>
+                    <td>
+                        <span class="badge bg-info text-dark">
+                            {{ $job->min_years_of_experience }} year{{ $job->min_years_of_experience > 1 ? 's' : '' }}
+                        </span>
+                    </td>
+                </tr>
+                @endif
+            </tbody>
+        </table>
+    </div>
+@endif
+
+
+
+
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                                     @if(!in_array($job->id, $userApplications))

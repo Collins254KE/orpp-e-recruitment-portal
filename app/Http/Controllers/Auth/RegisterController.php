@@ -92,10 +92,10 @@ protected function redirectTo()
 
         $user = $this->create($request->all());
 
-        event(new Registered($user)); // 🔔 Send verification email
+        event(new Registered($user)); //  Send verification email
 
         Auth::login($user);
 
-        return redirect()->route('verification.notice'); // 👈 redirect to built-in verification notice
+        return redirect()->route('verification.notice'); // redirect to built-in verification notice
     }
 }

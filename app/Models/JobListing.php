@@ -16,7 +16,6 @@ class JobListing extends Model
         'deadline',
         'duties_and_responsibilities',
         'requirements',
-        'benefits',
         'is_published',
         'created_by',
         'min_years_of_experience',

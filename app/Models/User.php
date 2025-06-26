@@ -34,6 +34,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'password',
         'county',
         'sub_county',
+        'ward',
         'ethnicity',
         'nationality',
         'gender',
@@ -103,6 +104,7 @@ class User extends Authenticatable implements MustVerifyEmail
             empty($this->ethnicity) ||
             empty($this->county) ||
             empty($this->sub_county) ||
+            empty($this->ward) ||
             empty($this->id_passport) ||
             empty($this->kra_pin) ||
             empty($this->phone) ||
@@ -120,7 +122,7 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         $fields = [
             'name', 'dob', 'gender', 'nationality', 'ethnicity',
-            'county', 'sub_county', 'id_passport', 'kra_pin', 'phone', 'disability_status'
+            'county', 'sub_county', 'ward', 'id_passport', 'kra_pin', 'phone', 'disability_status'
         ];
 
         $completed = 0;

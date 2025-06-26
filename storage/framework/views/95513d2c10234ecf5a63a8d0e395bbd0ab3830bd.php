@@ -100,8 +100,9 @@ endif;
 unset($__errorArgs, $__bag); ?>
                     </div>
                     <div class="mb-3">
-                        <label for="graduation_date" class="form-label">Graduation Date</label>
-                        <input type="date" class="form-control <?php $__errorArgs = ['graduation_date'];
+    <label for="graduation_date" class="form-label">Graduation Date</label>
+    <input type="date"
+           class="form-control <?php $__errorArgs = ['graduation_date'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
@@ -109,19 +110,22 @@ $message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>" 
-                               name="graduation_date"
-                               value="<?php echo e(old('graduation_date', $academicRecord->graduation_date ? \Carbon\Carbon::parse($academicRecord->graduation_date)->format('Y-m-d') : '')); ?>" required>
-                        <?php $__errorArgs = ['graduation_date'];
+           name="graduation_date"
+           max="2025-01-01"
+           value="<?php echo e(old('graduation_date', $academicRecord->graduation_date ? \Carbon\Carbon::parse($academicRecord->graduation_date)->format('Y-m-d') : '')); ?>"
+           required>
+    <?php $__errorArgs = ['graduation_date'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
 $message = $__bag->first($__errorArgs[0]); ?>
-                            <div class="invalid-feedback"><?php echo e($message); ?></div>
-                        <?php unset($message);
+        <div class="invalid-feedback"><?php echo e($message); ?></div>
+    <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>
-                    </div>
+</div>
+
 
                     <div class="mb-3">
                         <label for="institution_name" class="form-label">Institution Name</label>

@@ -3,6 +3,8 @@
 <?php $__env->startSection('content'); ?>
     <h1>Applications</h1>
 
+
+
     <form action="<?php echo e(route('admin.applicants.filter')); ?>" method="GET" style="margin-bottom: 1rem;">
         <label for="min_qualification">Minimum Qualification:</label>
         <select name="min_qualification" id="min_qualification">
@@ -55,7 +57,6 @@
                                 <option value="Closed" <?php echo e($application->status == 'Closed' ? 'selected' : ''); ?>>Closed</option>
                             </select>
                         </form>
-
                     </td>
                 </tr>
             <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>

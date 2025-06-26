@@ -121,15 +121,19 @@
                     </button>
 
                     <!-- Modal -->
-                    <div class="modal fade" id="jobModal<?php echo e($job->id); ?>" tabindex="-1" aria-labelledby="jobModalLabel<?php echo e($job->id); ?>" aria-hidden="true">
-                        <div class="modal-dialog modal-xl modal-dialog-centered">
-                            <div class="modal-content">
-                                <div class="modal-header bg-primary text-white">
-                                    <h5 class="modal-title" id="jobModalLabel<?php echo e($job->id); ?>">
-                                        <strong><?php echo e($job->title); ?></strong>
-                                    </h5>
-                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
+                   <div class="modal fade" id="jobModal<?php echo e($job->id); ?>" tabindex="-1" aria-labelledby="jobModalLabel<?php echo e($job->id); ?>" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <div>
+                    <h5 class="modal-title mb-0" id="jobModalLabel<?php echo e($job->id); ?>">
+                        <strong><?php echo e($job->title); ?></strong>
+                    </h5>
+                    <small>REF NO: <span class="text-warning fw-bold"><?php echo e($job->code); ?></span></small>
+                </div>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
                                 <div class="modal-body">
                                     <div class="row mb-3">
                                         <div class="col-md-6">
@@ -165,43 +169,82 @@
                                         </div>
                                     </div>
                                     <?php endif; ?>
+<?php if($job->requirements || $job->min_experience || $job->min_qualification || $job->min_level || $job->min_years_of_experience): ?>
+    <div class="table-responsive mb-3">
 
-                                    <?php if($job->requirements): ?>
-                                    <div class="card mb-3 border-success">
-                                        <div class="card-header bg-success text-white">
-                                            <h6 class="mb-0"><i class="fas fa-graduation-cap"></i> Requirements</h6>
-                                        </div>
-                                        <div class="card-body">
-                                            <?php echo nl2br(e($job->requirements)); ?>
+        <table class="table table-bordered border-success">
+         <thead>
+    <tr class="bg-info text-white">
+        <th colspan="2">
+            <i class="fas fa-graduation-cap me-1"></i> Requirements
+        </th>
+    </tr>
+</thead>
 
-                                        </div>
-                                    </div>
-                                    <?php endif; ?>
+            <tbody>
+                
+                <?php if($job->min_qualification): ?>
+                <tr>
+                    <th style="width: 35%;">Minimum Qualification</th>
+                    <td><?php echo e($job->min_qualification); ?></td>
+                </tr>
+                <?php endif; ?>
 
-                                    <?php if($job->benefits): ?>
-                                    <div class="card mb-3 border-warning">
-                                        <div class="card-header bg-warning text-dark">
-                                            <h6 class="mb-0"><i class="fas fa-gift"></i> Benefits</h6>
-                                        </div>
-                                        <div class="card-body">
-                                            <?php echo nl2br(e($job->benefits)); ?>
+                
+                <?php if($job->min_experience): ?>
+                <tr>
+                    <th>Minimum Years of Experience</th>
+                    <td><?php echo e($job->min_experience); ?> year<?php echo e($job->min_experience > 1 ? 's' : ''); ?></td>
+                </tr>
+                <?php endif; ?>
 
-                                        </div>
-                                    </div>
-                                    <?php endif; ?>
+                
+                <?php if($job->requirements): ?>
+                <tr>
+                    <th>Requirements</th>
+                    <td><?php echo nl2br(e($job->requirements)); ?></td>
+                </tr>
+                <?php endif; ?>
 
-                                    <?php if($job->description): ?>
-                                    <div class="card border-secondary">
-                                        <div class="card-header bg-secondary text-white">
-                                            <h6 class="mb-0"><i class="fas fa-info-circle"></i> Additional Information</h6>
-                                        </div>
-                                        <div class="card-body">
-                                            <?php echo $job->description; ?>
+                
+                <?php if($job->min_level): ?>
+                <tr>
+                    <th>Minimum Qualification Level</th>
+                    <td>
+                        <span class="badge bg-warning text-dark">
+                            <?php switch($job->min_level):
+                                case (1): ?> Certificate <?php break; ?>
+                                <?php case (2): ?> Diploma <?php break; ?>
+                                <?php case (3): ?> Degree <?php break; ?>
+                                <?php case (4): ?> Masters <?php break; ?>
+                                <?php case (5): ?> PhD <?php break; ?>
+                                <?php default: ?> Unknown
+                            <?php endswitch; ?>
+                        </span>
+                    </td>
+                </tr>
+                <?php endif; ?>
 
-                                        </div>
-                                    </div>
-                                    <?php endif; ?>
-                                </div>
+                
+                <?php if($job->min_years_of_experience): ?>
+                <tr>
+                    <th>Min Years of Experience</th>
+                    <td>
+                        <span class="badge bg-info text-dark">
+                            <?php echo e($job->min_years_of_experience); ?> year<?php echo e($job->min_years_of_experience > 1 ? 's' : ''); ?>
+
+                        </span>
+                    </td>
+                </tr>
+                <?php endif; ?>
+            </tbody>
+        </table>
+    </div>
+<?php endif; ?>
+
+
+
+
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                                     <?php if(!in_array($job->id, $userApplications)): ?>

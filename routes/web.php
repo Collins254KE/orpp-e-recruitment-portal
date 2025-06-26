@@ -7,6 +7,8 @@ use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\EmailVerificationController;
+use Barryvdh\DomPDF\Facade\Pdf;
+use App\Http\Controllers\Auth\VerificationController;
 
 use App\Http\Controllers\AcademicRecordController;
 use App\Http\Controllers\ProfessionalQualificationController;
@@ -47,7 +49,7 @@ Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $requ
 ->middleware(['auth', 'signed'])
 ->name('verification.verify');
 
-// Resend verification email
+//Resend verification email
 Route::post('/email/verification-notification', function (Request $request) {
     $request->user()->sendEmailVerificationNotification();
     return back()->with('message', 'Verification link sent!');
@@ -296,3 +298,27 @@ Route::put('/user/{user}', [UserController::class, 'update'])
 Route::get('/admin/applications/{id}/document', [ApplicationsController::class, 'viewDocument'])->name('admin.applications.document');
 Route::get('/admin/applications/{id}/document', [ApplicationsController::class, 'viewDocument'])->name('admin.applications.viewDocument');
 Route::post('/password/email', [ForgotPasswordController::class, 'sendResetLinkEmail']);
+
+Route::get('/admin/applications/{id}/view-document', [ApplicationsController::class, 'viewDocument'])->name('applications.viewDocument');
+Route::get('/admin/reports/applicant-summary', [ReportController::class, 'applicantSummary'])->name('admin.reports.applicant-summary');
+use App\Http\Controllers\ReportController;
+
+Route::get('/admin/reports/applicant-summary', [ReportController::class, 'applicantSummary'])->name('admin.reports.applicant-summary');
+Route::get('/admin/reports/applicant-summary-export', [ReportController::class, 'exportApplicantSummary'])->name('admin.reports.applicant-summary-export');
+ Route::get('/admin/applications/report', [ApplicationsController::class, 'generateReport'])->name('admin.applications.report');
+
+Route::get('email/verify', [VerificationController::class, 'show'])
+    ->middleware('auth')
+    ->name('verification.notice');
+
+Route::get('email/verify/{id}/{hash}', [VerificationController::class, 'verify'])
+    ->middleware(['auth', 'signed'])->name('verification.verify');
+
+Route::post('email/resend', [VerificationController::class, 'resend'])
+    ->middleware(['auth', 'throttle:6,1'])->name('verification.resend');
+Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
+    // other admin routes...
+
+   
+});
+    Route::get('/email/verify/{id}/{hash}', [VerificationController::class, 'verify']);

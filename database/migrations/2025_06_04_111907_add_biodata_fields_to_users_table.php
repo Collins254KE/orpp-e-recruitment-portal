@@ -24,6 +24,9 @@ class AddBiodataFieldsToUsersTable extends Migration
             if (!Schema::hasColumn('users', 'sub_county')) {
                 $table->string('sub_county')->nullable();
             }
+             if (!Schema::hasColumn('users', 'ward')) {
+                $table->string('ward')->nullable();
+            }
             if (!Schema::hasColumn('users', 'ethnicity')) {
                 $table->string('ethnicity')->nullable();
             }
@@ -65,6 +68,9 @@ class AddBiodataFieldsToUsersTable extends Migration
             }
             if (Schema::hasColumn('users', 'sub_county')) {
                 $table->dropColumn('sub_county');
+            }
+             if (Schema::hasColumn('users', 'ward')) {
+                $table->dropColumn('ward');
             }
             if (Schema::hasColumn('users', 'ethnicity')) {
                 $table->dropColumn('ethnicity');

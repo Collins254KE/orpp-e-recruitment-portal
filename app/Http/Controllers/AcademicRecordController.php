@@ -20,7 +20,8 @@ class AcademicRecordController extends Controller
             'qualification_code' => 'required|string|max:255',
             'qualification_name' => 'required|string|max:255',
             'qualification_cadre' => 'required|string|max:255',
-            'graduation_date' => 'required|date',
+            'graduation_date' => 'required|date|before_or_equal:2025-01-01',
+
             'institution_name' => 'required|string|max:255',
             'file' => 'required|file|mimes:pdf|max:2048', // Only allow PDF files
         ]);

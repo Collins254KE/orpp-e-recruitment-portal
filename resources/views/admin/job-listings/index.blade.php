@@ -36,12 +36,18 @@
                         <option value="0" {{ $filters['is_published'] == '0' ? 'selected' : '' }}>Draft</option>
                     </select>
                 </div>
-                <div class="col-md-3 d-flex align-items-end">
-                    <button type="submit" class="btn btn-primary me-2">Filter</button>
-                    <a href="{{ route('admin.job-listings.index') }}" class="btn btn-secondary">Clear</a>
-                </div>
-            </form>
-        </div>
+             <div class="col-md-3 d-flex align-items-end">
+    <button type="submit" class="btn btn-primary me-2">Filter</button>
+
+    <a href="{{ route('admin.job-listings.index') }}" class="btn btn-secondary me-2">Clear</a>
+
+    <form action="{{ route('admin.applications.report') }}" method="GET" target="_blank">
+        <button type="submit" class="btn btn-success">
+            <i class="fas fa-chart-pie"></i> Report
+        </button>
+    </form>
+</div>
+
     </div>
 
     <a href="{{ route('admin.job-listings.create') }}" class="btn btn-primary mb-3">Add New Job Listing</a>

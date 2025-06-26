@@ -58,14 +58,18 @@
                         @enderror
                     </div>
                     <div class="mb-3">
-                        <label for="graduation_date" class="form-label">Graduation Date</label>
-                        <input type="date" class="form-control @error('graduation_date') is-invalid @enderror" 
-                               name="graduation_date"
-                               value="{{ old('graduation_date', $academicRecord->graduation_date ? \Carbon\Carbon::parse($academicRecord->graduation_date)->format('Y-m-d') : '') }}" required>
-                        @error('graduation_date')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
+    <label for="graduation_date" class="form-label">Graduation Date</label>
+    <input type="date"
+           class="form-control @error('graduation_date') is-invalid @enderror" 
+           name="graduation_date"
+           max="2025-01-01"
+           value="{{ old('graduation_date', $academicRecord->graduation_date ? \Carbon\Carbon::parse($academicRecord->graduation_date)->format('Y-m-d') : '') }}"
+           required>
+    @error('graduation_date')
+        <div class="invalid-feedback">{{ $message }}</div>
+    @enderror
+</div>
+
 
                     <div class="mb-3">
                         <label for="institution_name" class="form-label">Institution Name</label>

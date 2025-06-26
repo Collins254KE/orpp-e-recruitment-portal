@@ -40,9 +40,12 @@
                 <p><strong>KRA PIN:</strong> {{ $user->kra_pin }}</p>
                 <p><strong>County:</strong> {{ $user->county }}</p>
     <p><strong>Sub-County:</strong> {{ $user->sub_county }}</p>
+     <p><strong>Ward:</strong> {{ $user->ward }}</p>
     <p><strong>Ethnicity:</strong> {{ $user->ethnicity }}</p>
                 <p><strong>Gender:</strong> {{ $user->gender}}</p>
                 <p><strong>Nationality:</strong> {{ $user->nationality }}</p>
+                <p><strong>Disability Certificate Number:</strong> {{ $user->disability_certificate_number }}</p>
+
     <p><strong>Date of Birth:</strong> {{ \Carbon\Carbon::parse($user->dob)->format('F d, Y') }}</p>
 
 <a href="{{ route('profile.edit') }}" class="btn btn-primary mt-3">Update biodata</a>

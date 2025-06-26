@@ -15,7 +15,9 @@ use ZipArchive;
 
 class ApplicationsController extends Controller
 {
-    protected $qualificationRanks = [
+    
+  
+   protected $qualificationRanks = [
         'Certificate' => 1,
         'Diploma'     => 2,
         'Degree'      => 3,

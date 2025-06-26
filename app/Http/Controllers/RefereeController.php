@@ -28,6 +28,7 @@ class RefereeController extends Controller
             'referee_type' => 'required|in:professional,personal', // Validate referee type
             'email' => 'required|email|max:255',
             'mobile_phone' => 'required|string|max:20',
+            
         ]);
 
         // Create the referee record

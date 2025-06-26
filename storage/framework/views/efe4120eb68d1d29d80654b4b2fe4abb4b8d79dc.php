@@ -49,11 +49,16 @@
             <input type="text" name="id_passport" class="form-control" value="<?php echo e(old('id_passport', $user->id_passport)); ?>">
         </div>
 
-        
-        <div class="mb-3">
-            <label for="kra_pin" class="form-label">KRA PIN</label>
-            <input type="text" name="kra_pin" class="form-control" value="<?php echo e(old('kra_pin', $user->kra_pin)); ?>">
-        </div>
+<div class="mb-3">
+    <label for="kra_pin" class="form-label">KRA PIN</label>
+    <input type="text" name="kra_pin" id="kra_pin"
+           class="form-control"
+           value="<?php echo e(old('kra_pin', $user->kra_pin)); ?>"
+           maxlength="12"
+           pattern="[A-Za-z0-9]+"
+           title="KRA PIN must be alphanumeric and no more than 12 characters.">
+</div>
+
 
         
         <div class="mb-3">
@@ -85,6 +90,16 @@
         
     </select>
 </div>
+
+<div class="mb-3">
+    <label for="ward" class="form-label">Ward</label>
+    <select name="ward" id="ward" class="form-control">
+        <option value="<?php echo e($user->ward); ?>" selected><?php echo e($user->ward); ?></option>
+
+        
+    </select>
+</div>
+
 
 <div class="mb-3">
     <label for="ethnicity" class="form-label text-sm fw-medium text-dark">Ethnicity</label>
@@ -130,11 +145,37 @@
             <input type="text" name="nationality" class="form-control" value="<?php echo e(old('nationality', $user->nationality)); ?>">
         </div>
 
+       
+
         
-        <div class="mb-3">
-            <label for="dob" class="form-label">Date of Birth</label>
-            <input type="date" name="dob" class="form-control" value="<?php echo e(old('dob', $user->dob ? \Carbon\Carbon::parse($user->dob)->format('Y-m-d') : '')); ?>">
-        </div>
+<div class="mb-3">
+    <label for="dob" class="form-label">Date of Birth</label>
+    <input type="date" 
+           name="dob" 
+           id="dob"
+           class="form-control <?php $__errorArgs = ['dob'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>"
+           max="2010-12-31"
+           value="<?php echo e(old('dob', $user->dob ? \Carbon\Carbon::parse($user->dob)->format('Y-m-d') : '')); ?>">
+    
+    <?php $__errorArgs = ['dob'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+        <div class="invalid-feedback"><?php echo e($message); ?></div>
+    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
+</div>
+
 
 <div class="mb-3">
     <label for="disability_status" class="form-label">Do you have a disability?</label>
@@ -148,10 +189,17 @@
 
 <div class="mb-3" id="certificateField" style="display: none;">
     <label for="disability_certificate_number" class="form-label">Disability Certificate Number</label>
-    <input type="text" name="disability_certificate_number" id="disability_certificate_number" class="form-control"
-        value="<?php echo e(old('disability_certificate_number', $user->disability_certificate_number)); ?>"
-        placeholder="Enter certificate number if applicable">
+    <input type="text"
+           name="disability_certificate_number"
+           id="disability_certificate_number"
+           class="form-control"
+           value="<?php echo e(old('disability_certificate_number', $user->disability_certificate_number)); ?>"
+           placeholder="Enter certificate number if applicable"
+           maxlength="12"
+           pattern="[A-Za-z0-9]{1,12}"
+           title="Maximum 12 alphanumeric characters only">
 </div>
+
 
 
 
@@ -210,23 +258,7 @@
   "Migori": ["Suna East", "Suna West", "Rongo", "Awendo", "Nyatike", "Uriri", "Kuria West", "Kuria East"],
   "Kisii": ["Bonchari", "Kitutu Chache", "Nyaribari Chache", "Nyaribari Masaba", "South Mugirango", "Kitutu Masaba", "Marani"],
   "Nyamira": ["Borabu", "Nyamira", "West Mugirango"],
-  "Nairobi": ["Westlands",
-    "Kibra",
-    "Lang'ata",
-    "Dagoretti North",
-    "Dagoretti South",
-    "Embakasi Central",
-    "Embakasi East",
-    "Embakasi North",
-    "Embakasi South",
-    "Embakasi West",
-    "Roysambu",
-    "Kasarani",
-    "Makadara",
-    "Starehe",
-    "Kamukunji",
-    "Mathare",
-    "Ruaraka"]
+  "Nairobi": ["Westlands", "Kibra", "Lang'ata", "Dagoretti North","Dagoretti South", "Embakasi Central","Embakasi East", "Embakasi North", "Embakasi South","Embakasi West","Roysambu","Kasarani","Makadara", "Starehe", "Kamukunji","Mathare", "Ruaraka"]
 }
 
     function loadSubCounties() {
@@ -258,27 +290,405 @@
         }
     });
 </script>
+
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const disabilitySelect = document.getElementById('disability_status');
-        const certField = document.getElementById('certificateField');
-        const certInput = document.getElementById('disability_certificate_number');
+  // Mapping sub-counties to wards
+  const subCountyToWards = {
+    "Kibra": ["Laini Saba", "Lindi", "Makina", "Woodley/Kenyatta Golf Course", "Sarang'ombe"],
+    "Lang'ata": ["Karen", "Nairobi West", "Mugumo‑ini", "South C", "Nyayo Highrise"],
+    "Dagoretti North": ["Kilimani", "Kawangware", "Gatina", "Kileleshwa", "Kabiro"],
+    "Dagoretti South": ["Mutu‑ini", "Ngand'o", "Riruta", "Uthiru/Ruthimitu", "Waithaka"],
+    "Embakasi Central": ["Kayole North", "Kayole Central", "Kayole South", "Komarock", "Matopeni/Spring Valley"],
+    "Embakasi East": ["Upper Savanna", "Lower Savanna", "Embakasi", "Utawala", "Mihang'o"],
+    "Embakasi North": ["Kariobangi North", "Dandora Area I", "Dandora Area II", "Dandora Area III", "Dandora Area IV"],
+    "Embakasi South": ["Imara Daima", "Kwa Njenga", "Kwa Reuben", "Pipeline", "Kware"],
+    "Embakasi West": ["Umoja I", "Umoja II", "Mowlem", "Kariobangi South"],
+    "Roysambu": ["Roysambu", "Zimmerman", "Githurai", "Kahawa", "Kahawa West"],
+    "Kasarani": ["Clay City", "Mwiki", "Kasarani", "Njiru", "Ruai"],
+    "Ruaraka": ["Babadogo", "Utalii", "Mathare North", "Lucky Summer", "Korogocho"],
+    "Makadara": ["Makongeni", "Maringo/Hamza", "Harambee", "Viwandani"],
+    "Kamukunji": ["Pumwani", "Eastleigh North", "Eastleigh South", "Airbase", "California"],
+    "Starehe": ["Nairobi Central", "Ngara", "Pangani", "Ziwani/Kariokor", "Nairobi South"],
+    "Mathare": ["Hospital", "Mabatini", "Huruma", "Ngei", "Mlango Kubwa", "Kiamaiko"],
+    "Westlands": ["Kitisuru", "Parklands/Highridge", "Karura", "Kangemi", "Mountain View"],
+    "Samburu West": ["Lodokejek", "Suguta Marmar", "Maralal", "Poro"],
+    "Narok North": ["Olpusimoru", "Olokurto", "Narok Town", "Nkareta", "Olorropil", "Melili"],
+    "Belgut": ["Waldai", "Kabianga", "Cheptororiet", "Chaik", "Kapsuser"],
+    "Bureti": ["Kisiara", "Tebesonik", "Cheboin", "Chemosot", "Litein", "Cheplanget", "Kapkatet"],
+    "Kipkelion East": ["Londiani", "Kedowa/Kimugul", "Chepseon", "Tendeno"],
+    "Kipkelion West": ["Kipkelion", "Chilchila", "Kamasian", "Kunyak"],
+    "Kericho East": ["Kapsoit", "Ainamoi", "Kapkugerwet", "Kipchebor", "Kipchimchim", "Kapsaos"],
+    "Sigowet–Soin": ["Sigowet", "Kaplelartet", "Soliat", "Soin"],
+    "Bomet Central": ["Mutarakwa", "Silibwet Township", "Singorwet", "Chesoen", "Ndaraweta"],
+    "Bomet East": ["Longisa", "Kembu", "Chemaner", "Merigi", "Kipkeres"],
+    "Chepalungu": ["Sigor", "Kongasis", "Chebunyo", "Nyongores", "Siongiroi"],
+    "Konoin": ["Kimulot", "Mogogosiek", "Boito", "Embomos", "Chepchabas"],
+    "Sotik": ["Ndanai/Abosi", "Kipsonoi", "Kapletundo", "Chemagel", "Manaret/Rongena"],
+"Kisii Central": ["Keumbu", "Kiogoro", "Birongo", "Ibeno"],
+"Kitutu Chache North": ["Sensi", "Marani", "Kegogi", "Kiamokama"],
+"Kitutu Chache South": ["Bogusero", "Bogeka", "Nyakoe", "Kitutu Central", "Nyatieko"],
+"Bonchari": ["Riana", "Bomorenda", "Bomariba", "Bogiakumu"],
+"South Mugirango": ["Tabaka", "Boikang’a", "Bogetenga", "Moticho", "Getenga"],
+"Bobasi": ["Masige East", "Masige West", "Bobasi Central", "Nyacheki", "Sameta/Mokwerero", "Boochi/Tendere"],
+"Bomachoge Borabu": ["Boochi Borabu", "Bombaba Borabu", "Magenche", "Borabu Chache"],
+"Bomachoge Chache": ["Majoge Basi", "Boochi/Tendere", "Bosoti/Sengera", "Tabaka"],
+"Nyaribari Chache": ["Bobaracho", "Kiogoro", "Birongo", "Ibeno"],
+"Nyaribari Masaba": ["Ichuni", "Nyamasibi", "Masimba", "Rigoma", "Gionsia"],  // Some wards overlap, ensure you dedupe if needed
+// Mombasa County
+"Mvita": ["Tudor", "Tononoka", "Shimanzi/Ganjoni", "Majengo", "Ganjoni"],
+"Kisauni": ["Mjambere", "Junda", "Bamburi", "Mwakirunge", "Mtopanga", "Magogoni", "Shanzu"],
+"Nyali": ["Frere Town", "Ziwa la Ng’ombe", "Mkomani", "Kongowea", "Kadzandani"],
+"Changamwe": ["Changamwe", "Chaani", "Airport", "Kipevu", "Port Reitz"],
+"Jomvu": ["Jomvu Kuu", "Miritini", "Mikindani"],
+"Likoni": ["Mtongwe", "Shika Adabu", "Bofu", "Likoni", "Timbwani"],
+// Kiambu County
+  "Gatundu North": ["Gituamba","Githobokoni","Chania","Mang’u"],
+  "Gatundu South": ["Kiamwangi","Kiganjo","Ndarugo","Ngenda"],
+  "Juja": ["Murera","Theta","Juja","Witeithie","Kalimoni"],
+  "Thika Town": ["Township","Kamenu","Hospital","Gatuanyaga","Ngoliba"],
+  "Ruiru": ["Gitothua","Biashara","Gatongora","Kahawa/Sukari","Kahawa Wendani","Kiuu","Mwiki","Mwihoko"],
+  "Githunguri": ["Githunguri","Githiga","Ikinu","Ngewa","Komothai"],
+  "Kiambu": ["Ting’ang’a","Ndumberi","Riabai","Township"],
+  "Kiambaa": ["Cianda","Karuri","Ndenderu","Muchatha","Kihara"],
+  "Kikuyu": ["Karai","Nachu","Sigona","Kikuyu","Kinoo"],
+  "Kabete": ["Gitaru","Muguga","Nyathuna","Kabete","Uthiru"],
+  "Limuru": ["Bibirioni","Limuru Central","Ndeiya","Limuru East","Ngecha/Tigoni"],
+  "Lari": ["Kinale","Kijabe","Nyanduma","Kamburu","Lari/Kirenga"],
 
-        function toggleCertificateField() {
-            if (disabilitySelect.value === 'yes') {
-                certField.style.display = 'block';
-                setTimeout(() => certInput.focus(), 300);
-                certInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            } else {
-                certField.style.display = 'none';
-                certInput.value = ''; // Optional: clear input when hidden
-            }
-        }
+  // Kirinyaga County
+  "Kirinyaga Central": ["Kerugoya Central","Kerugoya North","Nduini","Inoi","Kanyeki‑ine","Kerugoya South","Muruana","Mutira"],
+  "Mwea East": ["Kangai","Murinduko","Mutithi","Nyangati","Tebere","Thiba","Kinyaga","Kutus South"],
+  "Mwea West": ["Wamumu","Kahawa","Gichugu","Ndia North","Ndia South"], // example
+  "Gichugu": ["Gichugu South","Gichugu North"], // example
+  "Ndia": ["Gacharu","Karima","Kathaka","Kariti","Kiine","Mukure","Mwerua"],
 
-        disabilitySelect.addEventListener('change', toggleCertificateField);
+  // Meru County
+  "Imenti North": ["Buuri","Nchiru","Hill Girls","Ntonyiri","Kibirichia"],
+  "Imenti South": ["Kanuni","Kibirichia","Kiagu","Ntonyiri South"],
+  "Igembe North": ["Adu","Aujara","Kanuni","Tharaka"],
+  "Igembe Central": ["Maua","Athiru Gaiti","Akachiu"],
+  "Igembe South": ["Ntonyiri","Karama","Kaunguni"],
+  "Meru South": ["Michae","Nkuene","Nkubu","Athurine","Mugwe","Meru Town West","Meru Town East"],
 
-        // Run on load in case form was pre-filled
-        toggleCertificateField();
+  // Machakos County
+  "Mavoko": ["Mlango Kubwa","Masii","Athi River","Syokimau/Mulolongo","Kinanie"],
+  "Machakos Town": ["Muvuti","Kola","Machakos Town","Kangundo Road","Salama"],
+  "Yatta": ["Katoloni","Kitoloni","Ngewa","Matungulu","Matuu"],
+  "Kangundo": ["Kangundo North","Kangundo South","Mumoni","Kalama","Tala"],
+  "Kathiani": ["Kamunyolo","Mbeti North","Mbitini","Mitaboni","Kathiani"],
+  "Kangundo": ["same as above, ensure unique"],
+  // add more if needed...
+
+  // Nakuru County
+  "Nakuru East": ["Biashara","Mwariki","Shaabab","Menengai"],
+  "Nakuru West": ["Flamingo","Elburgon","Kaptembwo","Kapkures"],
+  "Nakuru Town East": ["Nakitari","Baruti","Kaptembwo East"],
+  "Nakuru Town West": ["Kamukunji","Kahawa","Kaptembwo West"],
+  "Naivasha": ["Naivasha Town","Kiamaina","Karagita","Tigoni","Elmenteita"],
+  "Gilgil": ["Gilgil Town","Mbogoini","Ndabibi"],
+  "Subukia": ["Kabazi","Munyu","Ngata","Kabazi East"],
+  // etc...
+
+  // Kajiado County
+  "Kajiado North": ["Ngong","Ololua","Mosiro","Ewuaso O Nkidong’i"],
+  "Kajiado East": ["Kitengela","Rombo","Lewa","Ongata Rongai"],
+  "Kajiado West": ["Isinya","Kiserian","Ongata Rongai West"],
+  "Kajiado South": ["Isinya South","Entonet","Iloodokilani","Mashuuru"],
+  "Magadi": ["Magadi Town","Mbirikani","Tuala"],
+  "Loitokitok": ["Loitokitok","Kimana","Isinya East"],
+  // Uasin Gishu
+"Soy": ["Ziwa", "Kapseret", "Segero/Barsombe", "Moi’s Bridge", "Kapsaos", "Kiplombe"],
+"Turbo": ["Tapsagoi", "Kamagut", "Kamagut", "Kiplombe", "Huruma", "Kimumu"],
+"Moiben": ["Karuna/Meibeki", "Sergoit", "Moiben", "Tembelio", "Kimumu"],
+"Ainabkoi": ["Kapsoya", "Ainabkoi/Olare", "Kaptagat"],
+"Kesses": ["Racecourse", "Cheptiret/Kipchamo", "Tarakwa"],
+"Kapseret": ["Simat/Kapseret", "Langas", "Megun", "Ngeria"],
+"Langas": ["Langas"],
+
+// Elgeyo-Marakwet
+"Keiyo North": ["Tambach", "Emsoo", "Kapchemutwa", "Kamariny"],
+"Keiyo South": ["Metkei", "Kabiemit", "Soy North", "Soy South"],
+"Marakwet East": ["Kapyego", "Endo", "Embobut/Embolot"],
+"Marakwet West": ["Lelan", "Sengwer", "Cherang’any/Chebororwa", "Moiben/Kuserwo"],
+
+// Nandi
+"Aldai": ["Kabwareng", "Kaptumo-Kaboi", "Kemeloi-Maraba", "Koyo-Ndurio", "Terik", "Kebulonik"],
+"Chesumei": ["Chemundu-Kapng’etuny", "Kosirai", "Lelmokwo/Ngechek", "Kaptel-Kamoiywo", "Chesumei"],
+"Emgwen": ["Cheptarit", "Kaptembwo", "Kapsabet", "Kilibwoni"],
+"Mosop": ["Kabiyet", "Kipkaren", "Ndalat", "Kurgung/Surungai", "Chepkumia", "Sang’alo/Kein"],
+"Nandi Hills": ["Nandi Hills", "Chepkunyuk", "O'lessos", "Kapchorwa"],
+"Tinderet": ["Tinderet", "Chemelil/Chemase", "Songhor/Soba", "Kapkures"],
+
+// Baringo
+"Baringo Central": ["Kabarnet", "Ewalel Chapchap", "Tenges", "Sacho", "Kapropita"],
+"Baringo North": ["Barwesa", "Kabartonjo", "Saimo/Kipsaraman", "Saimo/Soi"],
+"Baringo South": ["Marigat", "Ilchamus", "Mochongoi", "Mukutani"],
+"Mogotio": ["Emining", "Mochongoi", "Mogotio"],
+"Eldama Ravine": ["Lembus", "Lembus Perkerra", "Ravine", "Mumberes/Maji Mazuri", "Koibatek"],
+"Tiaty": ["Tangulbei/Korossi", "Kolowa", "Silale", "Loiyamorock", "Tirioko"],
+
+// Laikipia
+"Laikipia East": ["Ngobit", "Tigithi", "Thingithu", "Nanyuki", "Umande"],
+"Laikipia North": ["Mukogodo East", "Mukogodo West", "Sosian", "Segera"],
+"Laikipia West": ["Ol-Moran", "Rumuruti Township", "Githiga", "Salama", "Marmanet"],
+"Nyahururu": ["Igwamiti", "Gatimu", "Kanyagia", "Thiru", "Nyahururu Town"],
+// Kakamega
+"Lugari": ["Mautuma", "Lugari", "Lumakanda", "Chekalini", "Chevaywa", "Lawandeti"],
+"Likuyani": ["Likuyani", "Sango", "Kongoni", "Nzoia", "Sinoko"],
+"Malava": ["West Kabras", "East Kabras", "Butali/Chegulo", "Manda-Shivanga", "Shirugu-Mugai", "South Kabras", "Chemuche"],
+"Lurambi": ["Butsotso East", "Butsotso South", "Butsotso Central", "Shirere", "Mahiakalo", "Township"],
+"Navakholo": ["Ingotse-Mathia", "Shinyalu", "Bunyala West", "Bunyala East", "Navakholo"],
+"Shinyalu": ["Isukha South", "Isukha Central", "Isukha North", "Murhanda", "Isukha East", "Isukha West"],
+"Ikolomani": ["Idakho South", "Idakho East", "Idakho North", "Idakho Central"],
+"Mumias East": ["Lusheya-Lubinu", "Malaha/Isongo/Makunga", "East Wanga"],
+"Mumias West": ["Mumias Central", "Mumias North", "Etenje", "Musanda"],
+"Butere": ["Marama West", "Marama Central", "Marama North", "Marama South"],
+"Khwisero": ["Kisa North", "Kisa East", "Kisa West", "Kisa Central"],
+"Matungu": ["Koyonzo", "Kholera", "Khalaba", "Namamali"],
+
+// Vihiga
+"Vihiga": ["Lugaga-Wamuluma", "South Maragoli", "Central Maragoli", "Mungoma"],
+"Sabatia": ["Lyaduywa/Izava", "West Sabatia", "Chavakali", "North Maragoli", "Wodanga", "Busali"],
+"Luanda": ["Luanda Township", "Wemilabi", "Mwibona", "Emabungo", "Ekwanda"],
+"Hamisi": ["Shiru", "Gisambai", "Shamakhokho", "Banja", "Muhudu", "Tambua", "Jepkoyai"],
+"Emuhaya": ["North East Bunyore", "West Bunyore", "Central Bunyore"],
+
+
+// Busia
+"Teso North": ["Malaba Central", "Malaba North", "Malaba South", "Angurai South", "Angurai North", "Angurai East"],
+"Teso South": ["Ang’orom", "Chakol South", "Amukura East", "Amukura Central", "Amukura West"],
+"Nambale": ["Bukhayo North/Waltsi", "Bukhayo East", "Bukhayo Central", "Bukhayo West"],
+"Matayos": ["Mayenje", "Busibwabo", "Burumba", "Busia Township", "Bukhayo South"],
+"Butula": ["Marachi East", "Marachi Central", "Marachi West", "Kingandole", "Elugulu"],
+"Funyula": ["Nangina", "Ageng’a/Nanguba", "Namboboto-Nambuku", "Bwiri"],
+"Bunyala": ["Bunyala North", "Bunyala Central", "Bunyala South", "Bunyala West"],
+
+// Siaya
+"Ugenya": ["North Ugenya", "Ugunja", "West Ugenya", "East Ugenya"],
+"Ugunja": ["Ugunja", "Sidindi", "Sigomere"],
+"Alego Usonga": ["Usonga", "West Alego", "Central Alego", "South East Alego", "Siaya Township", "North Alego"],
+"Gem": ["North Gem", "East Gem", "Yala Township", "West Gem", "South Gem", "Central Gem"],
+"Bondo": ["West Yimbo", "Central Sakwa", "South Sakwa", "Yimbo East", "North Sakwa", "Usigu"],
+"Rarieda": ["West Asembo", "East Asembo", "North Uyoma", "South Uyoma", "East Uyoma"],
+
+// Kisumu
+"Kisumu East": ["Kajulu", "Kolwa East", "Manyatta 'B'", "Nyalenda 'A'", "Kolwa Central"],
+"Kisumu West": ["South West Kisumu", "Central Kisumu", "West Kisumu", "North West Kisumu", "North Kisumu"],
+"Kisumu Central": ["Railways", "Migosi", "Shaurimoyo Kaloleni", "Market Milimani", "Nyalenda B"],
+"Seme": ["West Seme", "Central Seme", "East Seme", "North Seme"],
+"Nyando": ["East Kano/Wawidhi", "Awasi/Onjiko", "Ahero", "Kabonyo/Kanyagwal", "Kobura"],
+"Muhoroni": ["Ombeyi", "Masogo/Nyang’oma", "Chemelil", "Muhoroni/Koru", "Miwani"],
+"Nyakach": ["South East Nyakach", "West Nyakach", "North Nyakach", "Central Nyakach", "West Kabodho"],
+
+// Homa Bay
+"Ndhiwa": ["Kabuoch North", "Kabuoch South/Pala", "Kanyadoto", "Kanyikela", "Kojwach", "Kochia", "Kwabwai"],
+"Rangwe": ["West Gem", "East Gem", "Kagan", "Kochia"],
+"Homa Bay Town": ["Homa Bay Central", "Homa Bay East", "Homa Bay West", "Homa Bay Arujo"],
+"Rachuonyo North": ["Kibiri", "Kendu Bay Town", "North Karachuonyo", "Wang’chieng", "West Karachuonyo", "Kibiri East"],
+"Rachuonyo South": ["Kojwach", "Kabondo East", "Kabondo West", "Kobuya"],
+"Suba North": ["Mfangano", "Kasgunga", "Lambwe", "Gember", "Rusinga"],
+"Suba South": ["Kaksingri West", "Gwassi South", "Gwassi North"],
+
+// Migori
+"Rongo": ["North Kamagambo", "East Kamagambo", "Central Kamagambo", "South Kamagambo"],
+"Awendo": ["North Sakwa", "South Sakwa", "West Sakwa", "Central Sakwa"],
+"Suna East": ["God Jope", "Suna Central", "Kakrao", "Kwa"],
+"Suna West": ["Wasweta I", "Wasweta II", "Ragana-Oruba", "Wiga"],
+"Uriri": ["West Kanyamkago", "Central Kanyamkago", "South Kanyamkago", "North Kanyamkago"],
+"Nyatike": ["Kachieng", "Kanyasa", "North Kadem", "Macalder/Kanyarwanda", "Got Kachola", "Muhuru"],
+"Kuria East": ["Gokeharaka/Getambwega", "Ntimaru East", "Ntimaru West", "Nyabasi East", "Nyabasi West"],
+"Kuria West": ["Bukira East", "Bukira Central/Ikerege", "Isibania", "Makerero", "Masaba", "Tagare", "Nyamosense/Komosoko"],
+ // Kwale
+  "Kwale": ["Timbwani", "Kibanda", "Mwereni", "Mzwandani", "Mwena", "Tsimba", "Matsangoni"],
+  "Kinango": ["Vanga", "Bodo", "Ukunda", "Mokowe", "Ngambenyi", "Mwachabo"],
+  "Lunga Lunga": ["Matuga", "Tsimba", "Lunga Lunga", "Pwani Mchangani"],
+  "Msambweni": ["Msambweni", "Tiwi", "Ngombeni", "Mwereni", "Diani"],
+  "Matuga": ["Mwachinga", "Mwaemba", "Bomani", "Mwarakaya", "Tsavo East"],
+  
+  // Kilifi
+  "Kilifi North": ["Mnarani", "Matsangoni", "Tezo", "Tezo East"],
+  "Kilifi South": ["Ganze", "Magarini", "Malindi Central", "Malindi West", "Malindi North"],
+  "Rabai": ["Rabia", "Marafa", "Munici", "Mwawesa"],
+  "Ganze": ["Kilifi South", "Kilifi East", "Kilifi West", "Mariakani"],
+  
+  // Tana River
+  "Tana North": ["Garsen East", "Garsen Central", "Garsen West"],
+  "Tana South": ["Galole", "Diame", "Hulugho"],
+  "Tana Delta": ["Bura", "Arduino", "Madogo"],
+  
+  // Lamu
+  "Lamu East": ["Kiunga", "Basuba", "Faza", "Shanga"],
+  "Lamu West": ["Shela", "Mkomani", "Hindi", "Bahari"],
+  
+  // Taita-Taveta
+  "Mwatate": ["Kaloleni", "Mwanda", "Mwachabo", "Athi"],
+  "Voi": ["Voi West", "Taveta", "Mboghoni", "Taveta Central"],
+  "Taveta": ["Bura", "Rongai", "Mboghoni", "Nguu/Masumba"],
+  
+  /* North-Eastern Region */
+  // Garissa
+  "Garissa Township": ["Garissa Central", "Garissa Iftin", "Garissa Dujis"],
+  "Fafi": ["Fafi North", "Ali Adde", "Ferfer", "Modogashe"],
+  "Ijara": ["Ijara Central", "Ijara East", "Ijara West"],
+  "Lagdera": ["Elsom", "Lagdera West", "Lagdera East"],
+  "Balambala": ["Balambala", "Kutulo"],
+  
+  // Wajir
+  "Wajir East": ["Eldas", "Dadajabula", "Korondile", "Sabuli"],
+  "Wajir North": ["Hadado", "Dadajabula North", "Waar"],
+  "Wajir South": ["Arbajahan", "Merre", "Malkamari"],
+  "Wajir West": ["Wajir West Central", "Bute", "Gurar"],
+  "Wajir East": ["Bute East", "Bute South", "Bute North"],
+  
+  // Mandera
+  "Mandera East": ["Kutulo", "Tulay", "Takaba South"],
+  "Mandera West": ["Takaba", "Mandera West", "Takaba Central"],
+  "Mandera North": ["Elwak North", "Elwak West", "Elwak South"],
+  "Mandera South": ["Mandera South", "Mandera East", "Guba"],
+  
+  // Marsabit
+  "Marsabit Central": ["Korr", "Laisamis"],
+  "Saku": ["Turbi", "Kalacha", "Shurr"],
+  "North Horr": ["North Horr", "Maikona"],
+  
+  // Isiolo
+  "Isiolo North": ["Oldonyiro", "Kinna", "Kipsigita"],
+  "Isiolo South": ["Merti", "Cherab", "Sericho"],
+  
+  /* Eastern & Central Region */
+  // Meru (county-level sub-counties)
+  "Imenti Central": ["Mwanganthia", "Gaitu", "Municipality", "Nkomo"],
+  "Imenti North": ["Ntima East", "Ntima West", "Municipality", "Nyaki East", "Nyaki West"],
+  "Imenti South": ["Abogeta East", "Abogeta West", "Nkuene", "Mitunguu"],
+  "Tigania East": ["Thangatha", "Mitunguu", "Karama", "Muthara", "Antuambui"],
+  "Tigania West": ["Athwana", "Kianjai", "Kiguchwa", "Mbeu", "Nkomo"],
+  "Buuri": ["Timau", "Kisima", "Kiirua/Naari", "Ruiri/Rwarera"],
+  "Igembe Central": ["Akirang'ondu", "Athiru", "Antubetwe Kiongo", "Igembe East"],
+  "Igembe North": ["Amwathi", "Antuambui", "Ntunene", "Naathu"],
+  "Igembe South": ["Maua", "Kangeta", "Kiegaene", "Athiru", "Kanuni"],
+  // Tharaka-Nithi
+  "Chuka/Igambang'ombe": ["Chiakariga", "Mugwe", "Igambang'ombe"],
+  "Tharaka": ["Nithi", "Chogoria", "Thingithu"],
+  "Maara": ["Maara", "Gitare/Karaba", "Riagu"],
+  
+  // Embu
+  "Manyatta": ["Kamuwongo", "Kagaru", "Gakoromone", "Njukini"],
+  "Runyenjes": ["Murinjo/Mutuati", "Nkubu", "Kagaari North", "Kagaari South"],
+  "Mbeere North": ["Kithimu", "Kaitwetu", "Kiambere"],
+  "Mbeere South": ["Kithimu", "Nyangati", "Mwea"],
+  
+  // Kitui
+  "Kitui Central": ["Mwingi North", "Mwingi West", "Mwingi East"],
+  "Kitui East": ["Matinyani", "Katulani", "Mutonguni"],
+  "Kitui Rural": ["Migwani", "Mutituu", "Ikanga"],
+  "Kitui South": ["Majoreni", "Nzambani", "Nuu"],
+  "Kitui West": ["Mutha", "Nthangeni", "Juhudi"],
+// Nyamira
+"Borabu": ["Esise", "Mekenene", "Kiabonyoru", "Nyansiongo"],
+"Manga": ["Kemera", "Magombo", "Gachuba", "Rigoma"],
+"Masaba North": ["Gesima", "Gachuba", "Kemera"],
+"Nyamira North": ["Ekerenyo", "Magwagwa", "Bokeira", "Bomwagamo", "Itibo"],
+"Nyamira South": ["Bogichora", "Bosamaro", "Bonyamatuta", "Township"],
+
+// Makueni
+"Kaiti": ["Ukia", "Kee", "Kilungu", "Ilima"],
+"Kibwezi East": ["Masongaleni", "Mtito Andei", "Thange", "Ivingoni/Nzambani"],
+"Kibwezi West": ["Makindu", "Nguumo", "Nguu/Masumba", "Emali/Mulala"],
+"Kilome": ["Kasikeu", "Mukaa", "Kiima Kiu/Kalanzoni"],
+"Makueni": ["Wote", "Muvau/Kikumini", "Mavindini", "Mzwaneni", "Kitise/Kithuki"],
+"Mbooni": ["Tulimani", "Mbooni", "Kithungo/Kitundu", "Kiteta/Kisau", "Kalawa"],
+// Murang'a
+"Gatanga": ["Kakuzi/Mitubiri", "Ithanga", "Kihumbu-ini", "Gatanga", "Kariara"],
+"Kahuro": ["Mugoiri", "Murarandia", "Muguru"],
+"Kandara": ["Gaichanjiru", "Ng’araria", "Muruka", "Kagundu-ini", "Ithiru"],
+"Kangema": ["Kanyenya-ini", "Muguru", "Rwathia"],
+"Kigumo": ["Kangari", "Kinyona", "Muthithi", "Kinyona East"], 
+"Kiharu": ["Wangu", "Mugoiri", "Mbiri", "Township", "Gaturi", "Kimathi"],
+"Mathioya": ["Githuya", "Kamacharia", "Gitugi"],
+
+// Narok
+"Narok East": ["Mosiro", "Ildamat", "Keekonyokie", "Suswa"],
+"Narok North": ["Olokurto", "Ololulung’a", "Olorropil", "Melili", "Nkareta"],
+"Narok South": ["Majimoto/Naroosura", "Melelo", "Loita", "Sogoo", "Sagamu"],
+"Narok West": ["Ilmotiok", "Mara", "Naikarra", "Siana"],
+"Trans Mara East": ["Ilkerin", "Ololmasani", "Mogondo"],
+"Trans Mara West": ["Lolgorian", "Kapsasian", "Keyian", "Angata Barikoi", "Kilgoris Central"],
+
+// Bungoma
+"Bumula": ["Khasoko", "Kabula", "South Bukusu", "West Bukusu", "Bumula"],
+"Kabuchai": ["Mukuyuni", "Kabuchai/Chwele", "West Nalondo", "Bwake/Luuya"],
+"Kanduyi": ["Bukembe East", "Bukembe West", "Township", "Khalaba", "Musikoma", "Marakaru/Tuuti", "Mihuu"],
+"Kimilili": ["Maeni", "Kimilili", "Milima", "Kibingei"],
+"Mt. Elgon": ["Cheptais", "Chesikaki", "Kaptama", "Kapsokwony", "Elgon"],
+"Sirisia": ["Namwela", "Malakisi/South Kulisiru", "Lwandanyi"],
+"Tongaren": ["Naitiri/Kabuyefwe", "Mbakalo", "Milima", "Ndalu/Tabani", "Tongaren"],
+"Webuye East": ["Mihuu", "Ndivisi", "Maraka"],
+"Webuye West": ["Misikhu", "Bokoli", "Sitikho", "Matulo"]
+
+
+  };
+
+  // Function to populate wards
+  function loadWards() {
+    const scSelect = document.getElementById('sub_county');
+    const wardSelect = document.getElementById('ward');
+    const wards = subCountyToWards[scSelect.value] || [];
+
+    // Reset wards dropdown
+    wardSelect.innerHTML = '<option value="">Select Ward</option>';
+
+    wards.forEach(w => {
+      const opt = document.createElement('option');
+      opt.value = w;
+      opt.textContent = w;
+      wardSelect.appendChild(opt);
     });
+  }
+
+  // Setup event listeners and pre-population
+  document.addEventListener('DOMContentLoaded', () => {
+    const scSelect = document.getElementById('sub_county');
+    
+    if (scSelect) {
+      scSelect.addEventListener('change', loadWards);
+      
+      // If form is loaded with a value (e.g., editing), auto populate
+      if (scSelect.value) {
+        loadWards();
+        const selectedWard = "<?php echo e(old('ward', $user->ward)); ?>";
+        if (selectedWard) {
+          document.getElementById('ward').value = selectedWard;
+        }
+      }
+    }
+  });
 </script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const disabilityStatus = document.getElementById('disability_status');
+    const certificateField = document.getElementById('certificateField');
+    const certificateInput = document.getElementById('disability_certificate_number');
+
+    function toggleCertificateField() {
+        if (disabilityStatus.value === 'yes') {
+            certificateField.style.display = 'block';
+            certificateInput.removeAttribute('readonly');
+            certificateInput.value = '';
+        } else {
+            certificateField.style.display = 'none';
+            certificateInput.value = 'N/A';
+            certificateInput.setAttribute('readonly', 'readonly');
+        }
+    }
+
+    // Call it on page load
+    toggleCertificateField();
+
+    // Call it whenever the selection changes
+    disabilityStatus.addEventListener('change', toggleCertificateField);
+});
+</script>
+
+
 <?php echo $__env->make('layout.main', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\orpp4\resources\views/profile/edit.blade.php ENDPATH**/ ?>

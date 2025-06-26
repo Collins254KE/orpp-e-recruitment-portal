@@ -148,8 +148,10 @@
 
   <div class="container">
     <img src="/assets/img/images.png" alt="ORPP Logo" class="logo" />
+<h2>
+  <span style="color: #004085; font-weight: bold;">ORPP e-Recruitment Portal Log In</span>
+</h2>
 
-    <h2>Log In</h2>
 
     <div class="toast" id="toast"></div>
 

@@ -408,6 +408,12 @@ function handleRegistration(event) {
 </script>
 
 
+<script>
+  function closeDeclinePopup() {
+    document.getElementById('declinePopup').style.display = 'none';
+  }
+</script>
+
 
 <script>
   const termsModal = document.getElementById('termsModal');
@@ -419,15 +425,27 @@ function handleRegistration(event) {
   acceptBtn.addEventListener('click', () => {
     termsModal.style.display = 'none';
     registrationForm.style.display = 'block';
+    document.getElementById('terms').checked = true;
     alert('Thank you for accepting the terms. You may now complete your registration.');
   });
-
-  declineBtn.addEventListener('click', () => {
-    termsModal.style.display = 'none';
+declineBtn.addEventListener('click', () => {
+  termsModal.style.display = 'none';
     alert('You must accept the Terms and Privacy Statement to register.');
-  });
-</script>
+  document.getElementById('declinePopup').style.display = 'flex';
+});
 
+  
+</script>
+<!-- Decline Message Modal -->
+<div id="declinePopup" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; 
+  background:rgba(0,0,0,0.6); z-index:1000; justify-content:center; align-items:center;">
+  <div style="background:white; padding:30px 40px; max-width:500px; text-align:center; border-radius:12px; box-shadow:0 0 20px rgba(0,0,0,0.2);">
+    <i class="fas fa-exclamation-triangle" style="color:#f44336; font-size:48px; margin-bottom:20px;"></i>
+    <h2 style="color:#333; margin-bottom:10px;">Terms Not Accepted</h2>
+    <p style="font-size:16px; color:#555;">You must accept the Terms and Privacy Policy to create an account on the recruitment portal.</p>
+    <button onclick="closeDeclinePopup()" style="margin-top:20px; background:#005fcc; color:white; border:none; padding:12px 24px; border-radius:5px; cursor:pointer;">Okay</button>
+  </div>
+</div>
 
 </body>
 
