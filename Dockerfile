@@ -2,29 +2,24 @@ FROM php:8.2-fpm
 
 WORKDIR /var/www
 
-# Install system dependencies
 RUN apt-get update && apt-get install -y \
-    git curl unzip zip libpng-dev libonig-dev libxml2-dev \
-    && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd tokenizer ctype
+    git curl unzip zip libpng-dev libonig-dev libxml2-dev libzip-dev \
+    && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd tokenizer ctype \
+    && rm -rf /var/lib/apt/lists/*
 
 # Install Composer
 RUN curl -sS https://getcomposer.org/installer | php && \
     mv composer.phar /usr/local/bin/composer
 
-# Copy composer files first (improves build cache)
-COPY composer.json composer.lock ./
-
-# Install Laravel dependencies
-RUN composer install --no-interaction --prefer-dist --optimize-autoloader
-
-# Copy rest of the app
+# Copy app files
 COPY . .
 
-# Copy default .env and fix permissions
+# Copy example environment as .env and fix permissions
 COPY .env.example .env
 RUN chmod 644 .env
 
-# Laravel setup
+# Install Laravel dependencies and cache config
+RUN composer install --no-interaction --prefer-dist --optimize-autoloader
 RUN php artisan key:generate
 RUN php artisan config:cache
 RUN php artisan route:cache
