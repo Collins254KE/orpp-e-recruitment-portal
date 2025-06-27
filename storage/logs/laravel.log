@@ -12084,3 +12084,11 @@ Did you mean one of these?
 #50 C:\\orpp4\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\resources\\server.php(16): require_once('...')
 #51 {main}
 "} 
+[2025-06-26 20:00:42] local.ERROR: Maximum execution time of 30 seconds exceeded {"exception":"[object] (Symfony\\Component\\ErrorHandler\\Error\\FatalError(code: 0): Maximum execution time of 30 seconds exceeded at C:\\orpp4\\vendor\\barryvdh\\laravel-dompdf\\config\\dompdf.php:14)
+[stacktrace]
+#0 {main}
+"} 
+[2025-06-26 20:19:23] local.ERROR: Maximum execution time of 30 seconds exceeded {"exception":"[object] (Symfony\\Component\\ErrorHandler\\Error\\FatalError(code: 0): Maximum execution time of 30 seconds exceeded at C:\\orpp4\\vendor\\league\\commonmark\\src\\Reference\\MemoryLimitedReferenceMap.php:16)
+[stacktrace]
+#0 {main}
+"} 
