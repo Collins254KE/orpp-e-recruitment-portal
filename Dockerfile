@@ -1,37 +1,31 @@
-# Use official PHP image
 FROM php:8.2-fpm
 
-# Set working directory
 WORKDIR /var/www
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
-    build-essential \
-    libpng-dev \
-    libjpeg-dev \
-    libonig-dev \
-    libxml2-dev \
-    zip \
-    unzip \
-    git \
-    curl
-
-# Install PHP extensions
-RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
+    git curl unzip zip libpng-dev libonig-dev libxml2-dev \
+    && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd tokenizer ctype
 
 # Install Composer
 RUN curl -sS https://getcomposer.org/installer | php && \
     mv composer.phar /usr/local/bin/composer
 
-# Copy project files
-COPY . /var/www
+# Copy composer files first (improves build cache)
+COPY composer.json composer.lock ./
 
-# Set permissions
-RUN chown -R www-data:www-data /var/www
+# Install Laravel dependencies
+RUN composer install --no-interaction --prefer-dist --optimize-autoloader
 
-# Laravel environment setup
-RUN composer install --no-interaction --prefer-dist --optimize-autoloader && \
-    php artisan key:generate && \
-    php artisan config:cache && \
-    php artisan route:cache && \
-    php artisan view:cache
+# Copy rest of the app
+COPY . .
+
+# Copy default .env and fix permissions
+COPY .env.example .env
+RUN chmod 644 .env
+
+# Laravel setup
+RUN php artisan key:generate
+RUN php artisan config:cache
+RUN php artisan route:cache
+RUN php artisan view:cache
