@@ -1,26 +1,47 @@
 FROM php:8.2-fpm
 
+# Set working directory
 WORKDIR /var/www
 
-RUN apt-get update && apt-get install -y \
-    git curl unzip zip libpng-dev libonig-dev libxml2-dev libzip-dev \
-    && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd tokenizer ctype \
-    && rm -rf /var/lib/apt/lists/*
+# Install system dependencies and PHP extensions
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        libzip-dev \
+        unzip \
+        git \
+        curl \
+        libpng-dev \
+        libonig-dev \
+        libxml2-dev \
+    && docker-php-ext-configure zip \
+    && docker-php-ext-install \
+        zip \
+        pdo_mysql \
+        mbstring \
+        exif \
+        pcntl \
+        bcmath \
+        gd \
+    && apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
-# Install Composer
+# Install Composer globally
 RUN curl -sS https://getcomposer.org/installer | php && \
     mv composer.phar /usr/local/bin/composer
 
-# Copy app files
+# Copy application source code
 COPY . .
 
-# Copy example environment as .env and fix permissions
+# Set environment and permissions
 COPY .env.example .env
-RUN chmod 644 .env
+RUN chmod 644 .env && \
+    chown -R www-data:www-data storage bootstrap/cache
 
-# Install Laravel dependencies and cache config
+# Install PHP dependencies
 RUN composer install --no-interaction --prefer-dist --optimize-autoloader
-RUN php artisan key:generate
-RUN php artisan config:cache
-RUN php artisan route:cache
-RUN php artisan view:cache
+
+# Laravel setup commands
+RUN php artisan key:generate && \
+    php artisan config:cache && \
+    php artisan route:cache && \
+    php artisan view:cache
