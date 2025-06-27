@@ -32,7 +32,7 @@ RUN curl -sS https://getcomposer.org/installer | php && \
 # Copy application source code
 COPY . .
 
-# Set environment and permissions
+# Copy and set permissions for .env
 COPY .env.example .env
 RUN chmod 644 .env && \
     chown -R www-data:www-data storage bootstrap/cache
@@ -40,8 +40,11 @@ RUN chmod 644 .env && \
 # Install PHP dependencies
 RUN composer install --no-interaction --prefer-dist --optimize-autoloader
 
-# Laravel setup commands
-RUN php artisan key:generate && \
-    php artisan config:cache && \
-    php artisan route:cache && \
-    php artisan view:cache
+# Copy and enable entrypoint script
+COPY entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
+# Set entrypoint
+CMD ["entrypoint.sh"]
+COPY entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
