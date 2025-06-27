@@ -1,37 +1,32 @@
-FROM php:8.2-apache
+FROM php:8.2-fpm
+
+# Set working directory
+WORKDIR /var/www
 
 # Install dependencies
 RUN apt-get update && apt-get install -y \
-    git curl unzip libpng-dev libonig-dev libxml2-dev zip libzip-dev \
-    && docker-php-ext-install pdo_mysql mbstring zip exif pcntl bcmath gd
+    build-essential \
+    libpng-dev \
+    libjpeg-dev \
+    libonig-dev \
+    libxml2-dev \
+    zip \
+    unzip \
+    git \
+    curl
 
-# Enable Apache rewrite module
-RUN a2enmod rewrite
+# Install PHP extensions
+RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
 
-# Set working directory
-WORKDIR /var/www/html
+# Copy existing application directory contents
+COPY . /var/www
 
-# Copy Composer
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+# Set permissions
+RUN chown -R www-data:www-data /var/www
 
-# Copy Laravel application files
-COPY . .
-
-# Update Apache config to serve Laravel from the /public folder
-RUN sed -i 's|DocumentRoot /var/www/html|DocumentRoot /var/www/html/public|' /etc/apache2/sites-available/000-default.conf
-
-# Set correct permissions
-RUN chown -R www-data:www-data /var/www/html \
-    && chmod -R 755 /var/www/html \
-    && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
-
-# Prepare Laravel environment
-    && composer install --no-interaction --prefer-dist --optimize-autoloader \
-    && php artisan key:generate \
-    && php artisan config:cache \
-    && php artisan route:cache \
-    && php artisan view:cache
-
-EXPOSE 80
-
-CMD ["apache2-foreground"]
+# Laravel environment setup
+RUN composer install --no-interaction --prefer-dist --optimize-autoloader && \
+    php artisan key:generate && \
+    php artisan config:cache && \
+    php artisan route:cache && \
+    php artisan view:cache
