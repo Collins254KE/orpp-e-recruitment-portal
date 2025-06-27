@@ -1,9 +1,10 @@
+# Use official PHP image
 FROM php:8.2-fpm
 
 # Set working directory
 WORKDIR /var/www
 
-# Install dependencies
+# Install system dependencies
 RUN apt-get update && apt-get install -y \
     build-essential \
     libpng-dev \
@@ -18,7 +19,11 @@ RUN apt-get update && apt-get install -y \
 # Install PHP extensions
 RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
 
-# Copy existing application directory contents
+# Install Composer
+RUN curl -sS https://getcomposer.org/installer | php && \
+    mv composer.phar /usr/local/bin/composer
+
+# Copy project files
 COPY . /var/www
 
 # Set permissions
